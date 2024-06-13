@@ -1,5 +1,5 @@
 const { expect, assert } = require("chai")
-const { ethers } = require("hardhat")
+const { ethers, waffle } = require("hardhat")
 const { routerABI, erc20ABI, factoryABI} = require("../utils/ABIlist")
 const { addressFactory, addressRouter, addressFrom, addressTo} = require("../utils/adressList")
 
@@ -43,6 +43,43 @@ describe("Read and write inthe blockchain", () => {
     it("get prices of amountsOut", async () => {
         const amount = await getAmountOut();
         assert(amount.toString())
-        console.log(amount.toString())
     });
+
+    it("sends transaccition swap a token", async () => {
+
+        const [ownerSigner] =  await ethers.getSigners()
+
+        const mainnetForkUniswapRouter = new ethers.Contract(
+            addressRouter,
+            routerABI,
+            ownerSigner
+        );
+
+        const myAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
+        const amountOut = await getAmountOut();
+
+        const txSwap = await mainnetForkUniswapRouter.swapExactTokensForTokens(
+            amounIn,
+            amountOut,
+            [addressFrom, addressTo],
+            myAddress,
+            Date.now() + 1000 * 60 * 5,
+            {
+                gasLimit: 200000,
+                gasPrice: ethers.utils.parseUnits("5.5", "gwei")
+            }
+        )
+
+        assert(txSwap.hash)
+        const mainnetForkProvider = waffle.provider
+        const txReceipt = await mainnetForkProvider.getTransactionReceipt(txSwap.hash)
+
+        console.log("")
+        console.log("SWAP TRANSACTION")
+        console.log(txSwap)
+
+        console.log("")
+        console.log("TRANSACTION RECEIPT")
+        console.log(txReceipt)
+    })
 })
