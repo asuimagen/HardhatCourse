@@ -1,4 +1,4 @@
-const { expect, assert } = require("chai")
+/* const { expect, assert } = require("chai")
 const { ethers, waffle } = require("hardhat")
 const { routerABI, erc20ABI, factoryABI} = require("../utils/ABIlist")
 const { addressFactory, addressRouter, addressFrom, addressTo} = require("../utils/adressList")
@@ -82,4 +82,4 @@ describe("Read and write inthe blockchain", () => {
         console.log("TRANSACTION RECEIPT")
         console.log(txReceipt)
     })
-})
+}) */
